@@ -1,7 +1,7 @@
 /node_modules
 /public/hot
 /public/storage
-/storage/*.key
+#/storage/*.key        # コメントアウトして storage 内も管理対象にする
 /vendor
 .env
 .env.backup
@@ -13,3 +13,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# MySQL データは除外
+docker/mysql/data/
