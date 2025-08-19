@@ -4,13 +4,15 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductRequest extends FormRequest
+class ProductRequest extends FormRequest
 {
+    
     public function authorize()
     {
-        return true; // 誰でもアクセス可能にする場合
+        return true;
     }
 
+    
     public function rules()
     {
         return [
@@ -18,10 +20,11 @@ class UpdateProductRequest extends FormRequest
             'price' => 'required|numeric|min:0|max:10000',
             'season' => 'required|array|min:1',
             'description' => 'required|string|max:120',
-            'image' => 'required|image|mimes:png,jpeg',
+            'image' => 'required|file|image|mimes:png,jpeg', 
         ];
     }
 
+    
     public function messages()
     {
         return [
@@ -31,9 +34,13 @@ class UpdateProductRequest extends FormRequest
             'price.min' => '0~10000円以内で入力してください',
             'price.max' => '0~10000円以内で入力してください',
             'season.required' => '季節を選択してください',
+            'season.array' => '季節の選択が正しくありません',
+            'season.min' => '少なくとも1つの季節を選択してください',
             'description.required' => '商品説明を入力してください',
             'description.max' => '120文字以内で入力してください',
             'image.required' => '商品画像を登録してください',
+            'image.file' => '商品画像を正しくアップロードしてください',
+            'image.image' => '画像ファイルを選択してください',
             'image.mimes' => '「.png」または「.jpeg」形式でアップロードしてください',
         ];
     }

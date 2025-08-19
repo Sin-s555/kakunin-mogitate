@@ -3,15 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use Illuminate\Http\Request; // 追加: index用
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\ProductRequest; // フォームリクエストを使用
+use App\Http\Requests\ProductRequest;
 
 class ProductController extends Controller
 {
-    /**
-     * 商品一覧表示（検索・並び替え対応、6件ごとのページネーション）
-     */
+    // 商品一覧表示
     public function index(Request $request)
     {
         $keyword = $request->input('keyword');
@@ -34,36 +32,30 @@ class ProductController extends Controller
         return view('products.index', compact('products'));
     }
 
-    /**
-     * 商品詳細表示
-     */
+    // 商品詳細表示
     public function show($id)
     {
         $product = Product::findOrFail($id);
         return view('products.show', compact('product'));
     }
 
-    /**
-     * 商品作成フォーム表示
-     */
+    // 商品作成フォーム表示
     public function create()
     {
         return view('products.create');
     }
 
-    /**
-     * 商品登録処理
-     */
     public function store(ProductRequest $request)
     {
         $validated = $request->validated();
 
-        // 画像アップロード
+        // 画像アップロード（必須なので null は許さない）
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('images', 'public');
             $validated['image'] = basename($imagePath);
         } else {
-            $validated['image'] = null;
+            // ここに来ることは基本ないが安全策として
+            return redirect()->back()->withErrors(['image' => '商品画像を登録してください'])->withInput();
         }
 
         $validated['season'] = json_encode($request->input('season'));
@@ -73,9 +65,7 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', '商品を登録しました。');
     }
 
-    /**
-     * 商品更新処理
-     */
+    // 商品更新処理
     public function update(ProductRequest $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -90,6 +80,7 @@ class ProductController extends Controller
             $imagePath = $request->file('image')->store('images', 'public');
             $validated['image'] = basename($imagePath);
         } else {
+            // 画像未選択の場合は既存の画像を維持
             $validated['image'] = $product->image;
         }
 
@@ -100,9 +91,7 @@ class ProductController extends Controller
         return redirect()->route('products.index')->with('success', '商品を更新しました。');
     }
 
-    /**
-     * 商品削除処理
-     */
+    // 商品削除処理
     public function destroy($id)
     {
         $product = Product::findOrFail($id);

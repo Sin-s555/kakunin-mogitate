@@ -4,19 +4,35 @@
 
 @section('content')
 <div class="product-detail-container">
-    <a href="{{ route('products.index') }}" class="back-link">商品一覧 ＞</a> {{ $product->name }}
+    <a href="{{ route('products.index') }}" class="back-link">商品一覧 ＞</a>
+    <h2>{{ $product->name }}</h2>
 
     <div class="product-detail-content">
+        {{-- 商品画像表示 --}}
         <div class="product-image-section">
             @php
-                $imagePath = $product->image
-                    ? asset('storage/images/' . $product->image)
-                    : asset('images/' . $product->dummy_image);
+                // 実際にアップロードされた画像があれば storage から
+                if ($product->image && file_exists(public_path('storage/images/' . $product->image))) {
+                    $imagePath = asset('storage/images/' . $product->image);
+                    $filename = $product->image;
+                } 
+                // そうでなければ public/images のダミー画像
+                elseif ($product->dummy_image && file_exists(public_path('images/' . $product->dummy_image))) {
+                    $imagePath = asset('images/' . $product->dummy_image);
+                    $filename = $product->dummy_image;
+                } 
+                // それ以外は空画像
+                else {
+                    $imagePath = asset('images/no-image.png');
+                    $filename = 'no-image.png';
+                }
             @endphp
+
             <img src="{{ $imagePath }}" alt="{{ $product->name }}">
-            <p class="filename">{{ $product->image ?? $product->dummy_image }}</p>
+            <p class="filename">{{ $filename }}</p>
         </div>
 
+        {{-- 商品編集フォーム --}}
         <form method="POST" action="{{ route('products.update', $product->id) }}" enctype="multipart/form-data" class="product-form">
             @csrf
             @method('PUT')
@@ -76,6 +92,7 @@
             </div>
         </form>
 
+        {{-- 商品削除フォーム --}}
         <form method="POST" action="{{ route('products.destroy', $product->id) }}" class="delete-form" onsubmit="return confirm('本当に削除しますか？');">
             @csrf
             @method('DELETE')

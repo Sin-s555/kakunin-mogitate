@@ -36,16 +36,18 @@
     <section class="products">
         @foreach ($products as $product)
             @php
-                $dummyPath = public_path('images/' . $product->image);
-                $storagePath = 'storage/images/' . $product->image;
+                // 優先度：アップロード画像 → ダミー画像 → no-image
+                if ($product->image && file_exists(storage_path('app/public/images/' . $product->image))) {
+                    $imagePath = asset('storage/images/' . $product->image);
+                } elseif ($product->dummy_image && file_exists(public_path('images/' . $product->dummy_image))) {
+                    $imagePath = asset('images/' . $product->dummy_image);
+                } else {
+                    $imagePath = asset('images/no-image.png');
+                }
             @endphp
 
             <a href="{{ route('products.show', $product->id) }}" class="product-card">
-                @if(file_exists($dummyPath))
-                    <img src="{{ asset('images/' . $product->image) }}" alt="{{ $product->name }}">
-                @elseif(file_exists(storage_path('app/public/images/' . $product->image)))
-                    <img src="{{ asset($storagePath) }}" alt="{{ $product->name }}">
-                @endif
+                <img src="{{ $imagePath }}" alt="{{ $product->name }}">
                 <div class="product-info">
                     <div class="product-name">{{ $product->name }}</div>
                     <div class="product-price">¥{{ number_format($product->price) }}</div>
