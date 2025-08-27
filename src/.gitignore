@@ -1,0 +1,39 @@
+# Node modules
+/node_modules
+
+# Public
+/public/hot
+/public/storage   
+
+# Environment
+.env              
+.env.backup
+.phpunit.result.cache
+
+# Docker
+docker-compose.override.yml
+Homestead.json
+Homestead.yaml
+
+# Logs / caches
+bootstrap/cache/packages.php
+bootstrap/cache/services.php
+storage/*.key
+storage/framework/*
+storage/logs/*
+storage/app/public/images/
+
+# Composer
+/vendor
+
+# IDE
+/.idea
+/.vscode
+
+# NPM / Yarn logs
+npm-debug.log
+yarn-error.log
+
+# MySQL データ
+docker/mysql/data/
+
