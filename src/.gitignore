@@ -3,10 +3,10 @@
 
 # Public
 /public/hot
-/public/storage   
+/public/storage   # storage 内のシンボリックリンクは除外
 
 # Environment
-.env              
+.env
 .env.backup
 .phpunit.result.cache
 
@@ -21,7 +21,7 @@ bootstrap/cache/services.php
 storage/*.key
 storage/framework/*
 storage/logs/*
-storage/app/public/images/
+storage/app/public/images/  # アップロード画像は除外（初期画像は public/images に置く）
 
 # Composer
 /vendor
@@ -37,3 +37,14 @@ yarn-error.log
 # MySQL データ
 docker/mysql/data/
 
+# Optional Laravel generated files
+/public/mix-manifest.json
+/public/css/app.css
+/public/js/app.js
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Laravel debugbar
+barryvdh/laravel-debugbar
